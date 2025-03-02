@@ -1,4 +1,4 @@
-# 🪨📄✂️ Rock-Paper-Scissors Game
+# ✂️ Rock-Paper-Scissors Game
 
 ## 🎯 Project Overview
 This project is an interactive **Rock-Paper-Scissors** game where a user plays against a computer using **hand gestures**! The game utilizes **image processing** to recognize user gestures and follows standard game rules to determine the winner.
