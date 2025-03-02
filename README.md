@@ -46,7 +46,7 @@ This project is an interactive **Rock-Paper-Scissors** game where a user plays a
    ```
 
 ## 📷 Example Screenshots
-🖼️ _[Add screenshots of your game interface here]_  
+![Screenshot 2025-03-02 121959](https://github.com/user-attachments/assets/a75153a8-9aeb-4931-adaa-3b3b64a1aee8)
 
 ## 🏆 Game Rules
 - **Rock** 🪨 beats Scissors ✂️
