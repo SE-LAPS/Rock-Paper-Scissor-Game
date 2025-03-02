@@ -1,7 +1,3 @@
-# Rock-Paper-Scissor-Game
-Python | OpenCV | NumPy | TensorFlow | Matplotlib | Pygame | Tkinter
-
-
 # 🪨📄✂️ Rock-Paper-Scissors Game
 
 ## 🎯 Project Overview
