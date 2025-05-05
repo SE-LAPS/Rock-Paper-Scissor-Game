@@ -1,66 +1,94 @@
-# ✂️ Rock-Paper-Scissors Game
+# Rock-Paper-Scissors Game UI with PySide6
 
-## 🎯 Project Overview
-This project is an interactive **Rock-Paper-Scissors** game where a user plays against a computer using **hand gestures**! The game utilizes **image processing** to recognize user gestures and follows standard game rules to determine the winner.
+Welcome to the **Rock-Paper-Scissors Game UI** repository!  
+This project showcases a simple, interactive, and visually appealing Rock-Paper-Scissors game built using **PySide6** - the official Python bindings for the Qt 6 framework.
 
-## 🔑 Key Features
-✅ **Hand Gesture Recognition**: Uses image processing to detect user gestures (Rock, Paper, Scissors).  
-✅ **Voice Command Activation**: Captures gestures when the user says _"Rock, Paper, Scissor, Shoot!"_.  
-✅ **Computer Opponent**: Randomly selects a move for the AI opponent.  
-✅ **Image Processing Steps**: Includes **background removal**, **grayscale conversion**, **thresholding**, and **binarization**.  
-✅ **Real-time Visualization**: Displays user and computer gestures side by side.  
-✅ **Attractive UI**: Clean and professional interface with real-time updates.  
-✅ **(Optional)**: Extended version with _Rock-Paper-Scissors-Lizard-Spock_.  
+---
 
-## 🛠️ Tech Stack
-- **Python** 🐍
-- **OpenCV** 👁️ (Image Processing)
-- **MediaPipe** 🖐️ (Hand Tracking)
-- **Tkinter / PyQt** 🎨 (GUI)
-- **NumPy** 🔢 (Image Processing)
-- **SpeechRecognition** 🎙️ (Voice Input)
+## About the Game
 
-## 🚀 How It Works
-1️⃣ User positions their hand in front of the camera.  
-2️⃣ Says _"Rock, Paper, Scissor, Shoot!"_ to capture the gesture.  
-3️⃣ The system processes the image and identifies the gesture.  
-4️⃣ The computer selects a random gesture.  
-5️⃣ The winner is determined based on the classic game rules.  
-6️⃣ The result is displayed on the screen.  
+Rock-Paper-Scissors is a classic hand game played between two players, where each player simultaneously forms one of three shapes with their hand:
 
-## 🖥️ Installation & Setup
-1. **Clone the Repository** 📂  
-   ```bash
-   git clone https://github.com/SE-LAPS/Rock-Paper-Scissor-Game.git
-   cd rock-paper-scissors-gesture
-   ```
+- **Rock** 
+- **Paper** 
+- **Scissors**
 
-2. **Install Dependencies** 📦  
-   ```bash
-   pip install opencv-python mediapipe numpy speechrecognition tkinter
-   ```
+The rules are straightforward:
 
-3. **Run the Game** ▶️  
-   ```bash
-   python main.py
-   ```
+- Rock crushes Scissors
+- Scissors cut Paper
+- Paper covers Rock
 
-## 📷 Example Screenshots
-![Screenshot 2025-03-02 121959](https://github.com/user-attachments/assets/a75153a8-9aeb-4931-adaa-3b3b64a1aee8)
+This project implements a graphical user interface (GUI) for playing this game against the computer, with an intuitive design and smooth user experience.
 
-## 🏆 Game Rules
-- **Rock** 🪨 beats Scissors ✂️
-- **Scissors** ✂️ beats Paper 📄
-- **Paper** 📄 beats Rock 🪨
-- (Optional) **Lizard** 🦎 and **Spock** 🖖 can be added for an advanced variant!
+---
 
-## 🛠️ Future Improvements
-- ✨ Improve gesture recognition accuracy.
-- 🎤 Enhance speech recognition for better user interaction.
-- 🧠 Implement a Machine Learning model for gesture classification.
+## Features
 
-## 📜 License
-This project is **open-source** and available under the **MIT License**.
+- Clean and modern UI built with PySide6
+- Clickable buttons for Rock, Paper, and Scissors choices
+- Real-time game result display
+- Score tracking for player and computer
+- Easy to extend and customize
 
-🚀 Have fun playing! Let the best hand win! ✋🤖
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.7 or higher
+- PySide6
+
+### Installation
+
+1. Clone this repository:
+
+2. (Optional) Create and activate a virtual environment:
+
+
+3. Install dependencies:
+
+
+---
+
+## Running the Game
+
+Run the main script to launch the Rock-Paper-Scissors UI
+
+
+---
+
+## How to Play
+
+1. Click one of the buttons: **Rock**, **Paper**, or **Scissors**.
+2. The computer will randomly choose its move.
+3. The game will display the result: win, lose, or draw.
+4. Scores will update accordingly.
+5. Have fun!
+
+---
+
+## Contributing
+
+Contributions, suggestions, and improvements are welcome!  
+Feel free to open issues or submit pull requests.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgements
+
+- Built with [PySide6](https://doc.qt.io/qtforpython/)
+- Inspired by the classic Rock-Paper-Scissors game
+
+---
+
+Enjoy playing and coding! If you want me to help with the source code or any other part, just ask...
+
 
