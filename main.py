@@ -1,12 +1,15 @@
+# main.py
+
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QStackedWidget,
 )
-from PySide6.QtGui import (
-    QIcon
-)
+from PySide6.QtGui import QIcon
 from PySide6.QtCore import QPropertyAnimation, QRect, QByteArray
+
 from pages.home_page.home_page import HomePage
 from pages.game_page.game_page import GamePage
+from pages.training_page.training_page import TrainingPage
+
 import sys
 
 class MainWindow(QMainWindow):
@@ -21,17 +24,19 @@ class MainWindow(QMainWindow):
 
         self.stack = QStackedWidget()
         self.home_page = HomePage(self.transition_to_game)
-        self.game_page = GamePage(self)
+        self.training_page = TrainingPage(parent=self)
 
         self.stack.addWidget(self.home_page)
-        self.stack.addWidget(self.game_page)
+        self.stack.addWidget(self.training_page)
 
         self.setCentralWidget(self.stack)
 
     def transition_to_game(self):
         """Animate transition from home to game page."""
-        self.stack.setCurrentIndex(1)
-        # self.animate_transition()
+        if not hasattr(self, 'game_page'):
+            self.game_page = GamePage(self)
+            self.stack.addWidget(self.game_page)
+        self.stack.setCurrentWidget(self.game_page)
 
     def animate_transition(self):
         """Smooth animation for the stacked widget switch."""

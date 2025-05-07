@@ -1,3 +1,4 @@
+# pages\home_page\home_page.py
 from PySide6.QtGui import QPixmap,QFont
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
