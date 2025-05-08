@@ -68,3 +68,8 @@ def get_hand_contours(thresh_img, frame):
     contoured = frame.copy()
     cv2.drawContours(contoured, contours, -1, (0, 255, 0), 2)
     return contoured
+
+def get_highlighted_frame(frame):
+    original, _, mask = preprocess_frame(frame)
+    highlighted = get_hand_contours(mask, original)
+    return highlighted

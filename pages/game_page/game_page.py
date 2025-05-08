@@ -9,7 +9,8 @@ import random
 
 from pages.widgets.vs_widget import VSWidget
 from process.gesture_recognizer import GestureRecognizer
-
+from process.hand_processing import get_highlighted_frame
+from process.camera_manager import CameraManager  # ✅ Added
 
 class GamePage(QWidget):
     def __init__(self, parent=None):
@@ -20,7 +21,6 @@ class GamePage(QWidget):
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_camera_frame)
         self.init_ui()
-        self.start_camera()
 
     def init_ui(self):
         self.setStyleSheet("background-color: #3b1d9e; color: white;")
@@ -30,6 +30,11 @@ class GamePage(QWidget):
         back_button = QPushButton("← Back to Home")
         back_button.clicked.connect(self.go_back_to_home)
         nav_layout.addWidget(back_button)
+
+        training_button = QPushButton("Go to Training Page")
+        training_button.clicked.connect(self.go_to_training)
+        nav_layout.addWidget(training_button)
+
         nav_layout.addStretch()
         main_layout.addLayout(nav_layout)
 
@@ -40,7 +45,6 @@ class GamePage(QWidget):
 
         game_layout = QHBoxLayout()
 
-        # Player camera
         self.live_feed_label = QLabel("Initializing...")
         self.live_feed_label.setFixedSize(250, 250)
         self.live_feed_label.setAlignment(Qt.AlignCenter)
@@ -50,7 +54,6 @@ class GamePage(QWidget):
         self.vs_widget = VSWidget()
         game_layout.addWidget(self.vs_widget)
 
-        # Computer image
         self.computer_img = QLabel()
         self.computer_img.setFixedSize(250, 250)
         self.computer_img.setAlignment(Qt.AlignCenter)
@@ -59,7 +62,6 @@ class GamePage(QWidget):
 
         main_layout.addLayout(game_layout)
 
-        # Game info
         self.status_label = QLabel("Press Start to begin!")
         self.status_label.setAlignment(Qt.AlignCenter)
         self.status_label.setFont(QFont("Arial", 16))
@@ -74,32 +76,39 @@ class GamePage(QWidget):
         self.result_label.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         main_layout.addWidget(self.result_label)
 
-        # Game logic state
         self.player_gesture = None
         self.timer_countdown = QTimer()
         self.timer_countdown.setInterval(1000)
         self.timer_countdown.timeout.connect(self.update_countdown)
         self.time_left = 3
 
-    def start_camera(self):
-        self.capture = cv2.VideoCapture(0)
-        if not self.capture.isOpened():
-            self.live_feed_label.setText("Camera Error")
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.setup_camera()
+
+    def setup_camera(self):  # ✅ Uses CameraManager
+        if self.capture and self.capture.isOpened():
             return
-        self.timer.start(30)
+        self.capture = CameraManager.get_instance().acquire_camera()
+        if not self.timer.isActive():
+            self.timer.start(30)
 
     def update_camera_frame(self):
+        if not self.capture or not self.capture.isOpened():
+            return
+
         ret, frame = self.capture.read()
         if not ret:
             return
 
         frame = cv2.flip(frame, 1)
-        gesture, processed_frame = self.gesture_recognizer.process_frame(frame)
+        gesture, _ = self.gesture_recognizer.process_frame(frame)
 
         if self.timer_countdown.isActive():
             self.player_gesture = gesture
 
-        rgb = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
+        highlighted = get_highlighted_frame(frame)
+        rgb = cv2.cvtColor(highlighted, cv2.COLOR_BGR2RGB)
         qt_img = QImage(rgb.data, rgb.shape[1], rgb.shape[0], rgb.strides[0], QImage.Format_RGB888)
         self.live_feed_label.setPixmap(QPixmap.fromImage(qt_img).scaled(250, 250, Qt.KeepAspectRatio))
 
@@ -145,14 +154,20 @@ class GamePage(QWidget):
             return "Pi Wins"
 
     def go_back_to_home(self):
-        self.timer.stop()
-        if self.capture and self.capture.isOpened():
-            self.capture.release()
+        self.cleanup_camera()
         if self.parent_window:
             self.parent_window.stack.setCurrentWidget(self.parent_window.home_page)
 
+    def go_to_training(self):
+        self.cleanup_camera()
+        if self.parent_window:
+            self.parent_window.stack.setCurrentWidget(self.parent_window.training_page)
+
     def closeEvent(self, event):
-        self.timer.stop()
-        if self.capture and self.capture.isOpened():
-            self.capture.release()
+        self.cleanup_camera()
         event.accept()
+
+    def cleanup_camera(self):  # ✅ Release with CameraManager
+        if self.timer.isActive():
+            self.timer.stop()
+        CameraManager.get_instance().release_camera()

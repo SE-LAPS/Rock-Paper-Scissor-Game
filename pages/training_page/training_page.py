@@ -1,10 +1,10 @@
-# pages/training_page/training_page.py
-
+# Refactored TrainingPage with button-based bulk capture and scrollable preview
 from PySide6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QLabel, QPushButton,
-    QHBoxLayout, QComboBox, QMessageBox, QDialog, QGridLayout
+    QWidget, QVBoxLayout, QLabel, QPushButton,
+    QHBoxLayout, QComboBox, QMessageBox, QDialog, QGridLayout,
+    QScrollArea, QFrame
 )
-from PySide6.QtCore import QTimer, Qt, QEvent, QThread
+from PySide6.QtCore import QTimer, Qt, QThread
 from PySide6.QtGui import QImage, QPixmap
 import cv2
 import numpy as np
@@ -23,29 +23,24 @@ class TrainingPage(QWidget):
         self.current_label = "rock"
         self.base_dir = "data"
         self.bulk_images = []
-        self.record_images = []
-        self.recording = False
 
         self.init_ui()
         self.setup_training_thread()
 
-        self.installEventFilter(self)
-
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_frame)
-
-        self.bulk_timer = QTimer(self)
-        self.bulk_timer.timeout.connect(self.capture_bulk_frame)
-
-        self.record_timer = QTimer(self)
-        self.record_timer.timeout.connect(self.capture_record_frame)
+        self.timer = QTimer(self, timeout=self.update_frame)
+        self.bulk_timer = QTimer(self, timeout=self.capture_bulk_frame)
 
     def init_ui(self):
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(30, 20, 30, 20)
-        self.layout.setSpacing(20)
+        self.layout.setSpacing(15)
 
-        # Top controls
+        self.init_controls()
+        self.init_camera_feed()
+        self.init_buttons()
+        self.init_status_labels()
+
+    def init_controls(self):
         top_row = QHBoxLayout()
         self.label_combo = QComboBox()
         self.label_combo.addItems(["rock", "paper", "scissors", "spock", "lizard"])
@@ -53,26 +48,20 @@ class TrainingPage(QWidget):
         top_row.addWidget(QLabel("Gesture:"))
         top_row.addWidget(self.label_combo)
 
-        self.retrain_button = QPushButton("Retrain Model")
-        self.retrain_button.setEnabled(True)
+        self.retrain_button = QPushButton("Retrain Model", enabled=True)
         top_row.addStretch()
         top_row.addWidget(self.retrain_button)
+
         self.layout.addLayout(top_row)
 
-        # Camera feed
-        self.image_display = QLabel("Camera Initializing...")
+    def init_camera_feed(self):
+        self.image_display = QLabel("Initializing Camera...")
         self.image_display.setFixedSize(800, 400)
         self.image_display.setAlignment(Qt.AlignCenter)
-        self.image_display.setStyleSheet("border: 3px solid green; background-color: black;")
+        self.image_display.setStyleSheet("border: 2px solid #4CAF50; background-color: #000;")
         self.layout.addWidget(self.image_display)
 
-        # Recording indicator
-        self.record_label = QLabel("")
-        self.record_label.setAlignment(Qt.AlignCenter)
-        self.record_label.setStyleSheet("color: red; font-weight: bold; font-size: 16px;")
-        self.layout.addWidget(self.record_label)
-
-        # Buttons row
+    def init_buttons(self):
         buttons = QHBoxLayout()
 
         self.capture_btn = QPushButton("Hold to Capture")
@@ -92,9 +81,12 @@ class TrainingPage(QWidget):
 
         self.layout.addLayout(buttons)
 
-        # Training status label
-        self.train_label = QLabel("")
-        self.train_label.setAlignment(Qt.AlignCenter)
+        self.counter_label = QLabel("Images Captured: 0")
+        self.counter_label.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.counter_label)
+
+    def init_status_labels(self):
+        self.train_label = QLabel("", alignment=Qt.AlignCenter)
         self.train_label.setStyleSheet("color: orange; font-weight: bold; font-size: 16px;")
         self.layout.addWidget(self.train_label)
 
@@ -128,7 +120,7 @@ class TrainingPage(QWidget):
         preview = cv2.cvtColor(preview, cv2.COLOR_BGR2RGB)
 
         h, w, ch = preview.shape
-        qt_img = QImage(preview.data, w, h, ch * w, QImage.Format.Format_RGB888)
+        qt_img = QImage(preview.data, w, h, ch * w, QImage.Format_RGB888)
         self.image_display.setPixmap(QPixmap.fromImage(qt_img))
 
         self.current_thresh = thresh_resized
@@ -138,94 +130,43 @@ class TrainingPage(QWidget):
             label_dir = os.path.join(self.base_dir, self.current_label)
             os.makedirs(label_dir, exist_ok=True)
             filename = f"{self.current_label}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.png"
-            cv2.imwrite(os.path.join(label_dir, filename), self.current_thresh)
-            QMessageBox.information(self, "Captured", f"Saved to: {filename}")
+            filepath = os.path.join(label_dir, filename)
+            cv2.imwrite(filepath, self.current_thresh)
+            QMessageBox.information(self, "Image Captured", f"Saved: {filepath}")
 
     def start_bulk_capture(self):
-        self.bulk_images = []
+        self.bulk_images.clear()
+        self.counter_label.setText("Images Captured: 0")
         self.bulk_timer.start(100)
 
     def stop_bulk_capture(self):
         self.bulk_timer.stop()
         if not self.bulk_images:
             return
-
-        response = QMessageBox.question(
-            self, "Bulk Capture Complete",
-            f"{len(self.bulk_images)} images captured for '{self.current_label}'. Save them?",
-            QMessageBox.Yes | QMessageBox.No
-        )
-
-        if response == QMessageBox.Yes:
-            label_dir = os.path.join(self.base_dir, self.current_label)
-            os.makedirs(label_dir, exist_ok=True)
-            for img in self.bulk_images:
-                filename = f"{self.current_label}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.png"
-                cv2.imwrite(os.path.join(label_dir, filename), img)
-            QMessageBox.information(self, "Saved", f"Images saved to {label_dir}")
-        else:
-            QMessageBox.information(self, "Discarded", "Images were not saved.")
+        self.show_bulk_preview()
 
     def capture_bulk_frame(self):
-        if len(self.bulk_images) < 100 and hasattr(self, 'current_thresh'):
+        if hasattr(self, 'current_thresh') and len(self.bulk_images) < 100:
             self.bulk_images.append(self.current_thresh.copy())
+            self.counter_label.setText(f"Images Captured: {len(self.bulk_images)}")
 
-    def change_label(self, label):
-        self.current_label = label
-
-    def go_back_to_game(self):
-        self.timer.stop()
-        self.bulk_timer.stop()
-        self.record_timer.stop()
-        CameraManager.get_instance().release_camera()
-        QApplication.processEvents()
-        self.parent_window.stack.setCurrentWidget(self.parent_window.game_page)
-
-    # ───────────────────────────────────────────────
-    # SPACEBAR: TOGGLE RECORDING
-    # ───────────────────────────────────────────────
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.KeyPress and event.key() == Qt.Key_Space:
-            if not self.recording:
-                self.start_recording()
-            else:
-                self.stop_recording()
-            return True
-        return super().eventFilter(obj, event)
-
-    def start_recording(self):
-        self.recording = True
-        self.record_images = []
-        self.record_timer.start(100)
-        self.record_label.setText("● Recording...")
-
-    def stop_recording(self):
-        self.recording = False
-        self.record_timer.stop()
-        self.record_label.setText("")
-        self._show_recording_preview()
-
-    def capture_record_frame(self):
-        if hasattr(self, 'current_thresh'):
-            self.record_images.append(self.current_thresh.copy())
-
-    def _show_recording_preview(self):
-        if not self.record_images:
-            return
-
-        dialog = QDialog(self)
-        dialog.setWindowTitle("Save Recording?")
+    def show_bulk_preview(self):
+        dialog = QDialog(self, windowTitle="Save Captured Images?")
         layout = QVBoxLayout(dialog)
 
-        grid = QGridLayout()
-        for i, img in enumerate(self.record_images[:30]):
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-            qt_img = QImage(img_rgb.data, img.shape[1], img.shape[0], img.shape[1] * 3, QImage.Format_RGB888)
+        scroll = QScrollArea()
+        container = QFrame()
+        grid = QGridLayout(container)
+
+        for i, img in enumerate(self.bulk_images):
+            qt_img = QImage(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB).data, img.shape[1], img.shape[0], img.shape[1] * 3, QImage.Format_RGB888)
             label = QLabel()
             label.setPixmap(QPixmap.fromImage(qt_img).scaled(100, 100, Qt.KeepAspectRatio))
             grid.addWidget(label, i // 10, i % 10)
 
-        layout.addLayout(grid)
+        scroll.setWidget(container)
+        scroll.setWidgetResizable(True)
+        layout.addWidget(scroll)
 
         buttons = QHBoxLayout()
         save_btn = QPushButton("Save")
@@ -234,21 +175,27 @@ class TrainingPage(QWidget):
         buttons.addWidget(discard_btn)
         layout.addLayout(buttons)
 
-        def save():
-            label_dir = os.path.join(self.base_dir, self.current_label)
-            os.makedirs(label_dir, exist_ok=True)
-            for img in self.record_images:
-                filename = f"{self.current_label}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.png"
-                cv2.imwrite(os.path.join(label_dir, filename), img)
-            dialog.accept()
-
-        def discard():
-            dialog.reject()
-
-        save_btn.clicked.connect(save)
-        discard_btn.clicked.connect(discard)
+        save_btn.clicked.connect(lambda: self.save_bulk_images(dialog))
+        discard_btn.clicked.connect(dialog.reject)
 
         dialog.exec()
+
+    def save_bulk_images(self, dialog):
+        label_dir = os.path.join(self.base_dir, self.current_label)
+        os.makedirs(label_dir, exist_ok=True)
+        for img in self.bulk_images:
+            filename = f"{self.current_label}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.png"
+            cv2.imwrite(os.path.join(label_dir, filename), img)
+        dialog.accept()
+
+    def change_label(self, label):
+        self.current_label = label
+
+    def go_back_to_game(self):
+        for t in (self.timer, self.bulk_timer):
+            t.stop()
+        CameraManager.get_instance().release_camera()
+        self.parent_window.stack.setCurrentWidget(self.parent_window.game_page)
 
     def setup_training_thread(self):
         from process.model_trainer import ModelTrainer
