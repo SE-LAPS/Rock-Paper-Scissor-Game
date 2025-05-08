@@ -1,10 +1,11 @@
+# pages/training_page/training_page.py
+
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QLabel, QPushButton,
     QHBoxLayout, QComboBox, QMessageBox, QDialog, QGridLayout
 )
-from PySide6.QtCore import QTimer, Qt, QEvent
+from PySide6.QtCore import QTimer, Qt, QEvent, QThread
 from PySide6.QtGui import QImage, QPixmap
-
 import cv2
 import numpy as np
 import os
@@ -22,9 +23,12 @@ class TrainingPage(QWidget):
         self.current_label = "rock"
         self.base_dir = "data"
         self.bulk_images = []
-        self.recording = False
         self.record_images = []
+        self.recording = False
+
         self.init_ui()
+        self.setup_training_thread()
+
         self.installEventFilter(self)
 
         self.timer = QTimer(self)
@@ -37,9 +41,9 @@ class TrainingPage(QWidget):
         self.record_timer.timeout.connect(self.capture_record_frame)
 
     def init_ui(self):
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(30, 20, 30, 20)
-        layout.setSpacing(20)
+        self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(30, 20, 30, 20)
+        self.layout.setSpacing(20)
 
         # Top controls
         top_row = QHBoxLayout()
@@ -50,42 +54,49 @@ class TrainingPage(QWidget):
         top_row.addWidget(self.label_combo)
 
         self.retrain_button = QPushButton("Retrain Model")
-        self.retrain_button.setEnabled(False)
+        self.retrain_button.setEnabled(True)
         top_row.addStretch()
         top_row.addWidget(self.retrain_button)
-        layout.addLayout(top_row)
+        self.layout.addLayout(top_row)
 
-        # Camera preview + recording indicator
+        # Camera feed
         self.image_display = QLabel("Camera Initializing...")
         self.image_display.setFixedSize(800, 400)
         self.image_display.setAlignment(Qt.AlignCenter)
         self.image_display.setStyleSheet("border: 3px solid green; background-color: black;")
-        layout.addWidget(self.image_display)
+        self.layout.addWidget(self.image_display)
 
+        # Recording indicator
         self.record_label = QLabel("")
         self.record_label.setAlignment(Qt.AlignCenter)
         self.record_label.setStyleSheet("color: red; font-weight: bold; font-size: 16px;")
-        layout.addWidget(self.record_label)
+        self.layout.addWidget(self.record_label)
 
-        # Bottom buttons
-        button_row = QHBoxLayout()
+        # Buttons row
+        buttons = QHBoxLayout()
 
         self.capture_btn = QPushButton("Hold to Capture")
         self.capture_btn.pressed.connect(self.start_bulk_capture)
         self.capture_btn.released.connect(self.stop_bulk_capture)
-        button_row.addWidget(self.capture_btn)
+        buttons.addWidget(self.capture_btn)
 
         self.single_btn = QPushButton("Capture One")
         self.single_btn.clicked.connect(self.capture_single_frame)
-        button_row.addWidget(self.single_btn)
+        buttons.addWidget(self.single_btn)
 
-        button_row.addStretch()
+        buttons.addStretch()
 
         self.exit_btn = QPushButton("Back to Game")
         self.exit_btn.clicked.connect(self.go_back_to_game)
-        button_row.addWidget(self.exit_btn)
+        buttons.addWidget(self.exit_btn)
 
-        layout.addLayout(button_row)
+        self.layout.addLayout(buttons)
+
+        # Training status label
+        self.train_label = QLabel("")
+        self.train_label.setAlignment(Qt.AlignCenter)
+        self.train_label.setStyleSheet("color: orange; font-weight: bold; font-size: 16px;")
+        self.layout.addWidget(self.train_label)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -122,70 +133,56 @@ class TrainingPage(QWidget):
 
         self.current_thresh = thresh_resized
 
-    def start_bulk_capture(self):
-        if not hasattr(self, 'current_thresh'):
-            return
-        self.bulk_images = []
-        self.bulk_timer.start(100)
-
-    def stop_bulk_capture(self):
-        self.bulk_timer.stop()
-        count = len(self.bulk_images)
-        if count == 0:
-            return
-
-        msg = QMessageBox(self)
-        msg.setWindowTitle("Bulk Capture Complete")
-        msg.setText(f"{count} images captured for '{self.current_label}'.")
-        msg.setInformativeText("Would you like to save them?")
-        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        msg.setDefaultButton(QMessageBox.Yes)
-
-        result = msg.exec()
-
-        if result == QMessageBox.Yes:
-            label_dir = os.path.join(self.base_dir, self.current_label)
-            os.makedirs(label_dir, exist_ok=True)
-            for img in self.bulk_images:
-                filename = f"{self.current_label}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.png"
-                path = os.path.join(label_dir, filename)
-                cv2.imwrite(path, img)
-            QMessageBox.information(self, "Saved", f"{count} images saved to {label_dir}")
-        else:
-            QMessageBox.information(self, "Discarded", "Captured images discarded.")
-
-    def capture_bulk_frame(self):
-        if len(self.bulk_images) < 100 and hasattr(self, 'current_thresh'):
-            self.bulk_images.append(self.current_thresh.copy())
-
     def capture_single_frame(self):
         if hasattr(self, 'current_thresh'):
             label_dir = os.path.join(self.base_dir, self.current_label)
             os.makedirs(label_dir, exist_ok=True)
             filename = f"{self.current_label}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.png"
-            path = os.path.join(label_dir, filename)
-            cv2.imwrite(path, self.current_thresh)
-            QMessageBox.information(self, "Captured", f"Saved to: {path}")
+            cv2.imwrite(os.path.join(label_dir, filename), self.current_thresh)
+            QMessageBox.information(self, "Captured", f"Saved to: {filename}")
+
+    def start_bulk_capture(self):
+        self.bulk_images = []
+        self.bulk_timer.start(100)
+
+    def stop_bulk_capture(self):
+        self.bulk_timer.stop()
+        if not self.bulk_images:
+            return
+
+        response = QMessageBox.question(
+            self, "Bulk Capture Complete",
+            f"{len(self.bulk_images)} images captured for '{self.current_label}'. Save them?",
+            QMessageBox.Yes | QMessageBox.No
+        )
+
+        if response == QMessageBox.Yes:
+            label_dir = os.path.join(self.base_dir, self.current_label)
+            os.makedirs(label_dir, exist_ok=True)
+            for img in self.bulk_images:
+                filename = f"{self.current_label}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.png"
+                cv2.imwrite(os.path.join(label_dir, filename), img)
+            QMessageBox.information(self, "Saved", f"Images saved to {label_dir}")
+        else:
+            QMessageBox.information(self, "Discarded", "Images were not saved.")
+
+    def capture_bulk_frame(self):
+        if len(self.bulk_images) < 100 and hasattr(self, 'current_thresh'):
+            self.bulk_images.append(self.current_thresh.copy())
 
     def change_label(self, label):
         self.current_label = label
 
     def go_back_to_game(self):
-        if self.timer.isActive():
-            self.timer.stop()
-        if self.bulk_timer.isActive():
-            self.bulk_timer.stop()
-        if self.record_timer.isActive():
-            self.record_timer.stop()
-
+        self.timer.stop()
+        self.bulk_timer.stop()
+        self.record_timer.stop()
         CameraManager.get_instance().release_camera()
         QApplication.processEvents()
-
-        if self.parent_window and hasattr(self.parent_window, 'stack'):
-            self.parent_window.stack.setCurrentWidget(self.parent_window.game_page)
+        self.parent_window.stack.setCurrentWidget(self.parent_window.game_page)
 
     # ───────────────────────────────────────────────
-    # SPACEBAR: TOGGLE RECORDING MODE
+    # SPACEBAR: TOGGLE RECORDING
     # ───────────────────────────────────────────────
     def eventFilter(self, obj, event):
         if event.type() == QEvent.KeyPress and event.key() == Qt.Key_Space:
@@ -201,13 +198,11 @@ class TrainingPage(QWidget):
         self.record_images = []
         self.record_timer.start(100)
         self.record_label.setText("● Recording...")
-        print("Started recording...")
 
     def stop_recording(self):
         self.recording = False
         self.record_timer.stop()
         self.record_label.setText("")
-        print("Stopped recording.")
         self._show_recording_preview()
 
     def capture_record_frame(self):
@@ -223,13 +218,11 @@ class TrainingPage(QWidget):
         layout = QVBoxLayout(dialog)
 
         grid = QGridLayout()
-        for i, img in enumerate(self.record_images[:30]):  # max 30 for UI
+        for i, img in enumerate(self.record_images[:30]):
             img_rgb = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-            h, w = img.shape
-            qt_img = QImage(img_rgb.data, w, h, 3 * w, QImage.Format_RGB888)
-            pixmap = QPixmap.fromImage(qt_img).scaled(100, 100, Qt.KeepAspectRatio)
+            qt_img = QImage(img_rgb.data, img.shape[1], img.shape[0], img.shape[1] * 3, QImage.Format_RGB888)
             label = QLabel()
-            label.setPixmap(pixmap)
+            label.setPixmap(QPixmap.fromImage(qt_img).scaled(100, 100, Qt.KeepAspectRatio))
             grid.addWidget(label, i // 10, i % 10)
 
         layout.addLayout(grid)
@@ -246,8 +239,7 @@ class TrainingPage(QWidget):
             os.makedirs(label_dir, exist_ok=True)
             for img in self.record_images:
                 filename = f"{self.current_label}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.png"
-                path = os.path.join(label_dir, filename)
-                cv2.imwrite(path, img)
+                cv2.imwrite(os.path.join(label_dir, filename), img)
             dialog.accept()
 
         def discard():
@@ -257,3 +249,23 @@ class TrainingPage(QWidget):
         discard_btn.clicked.connect(discard)
 
         dialog.exec()
+
+    def setup_training_thread(self):
+        from process.model_trainer import ModelTrainer
+        self.training_thread = QThread()
+        self.trainer = ModelTrainer()
+        self.trainer.moveToThread(self.training_thread)
+
+        self.trainer.training_started.connect(lambda: self.train_label.setText("⏳ Training in progress..."))
+        self.trainer.training_finished.connect(self.on_training_done)
+        self.training_thread.started.connect(self.trainer.train)
+
+        self.retrain_button.clicked.connect(self.start_training)
+
+    def start_training(self):
+        if not self.training_thread.isRunning():
+            self.training_thread.start()
+
+    def on_training_done(self, message):
+        self.train_label.setText(message)
+        self.training_thread.quit()
