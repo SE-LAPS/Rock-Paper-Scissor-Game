@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎮 Rock-Paper-Scissors-Lizard-Spock Game 🎲
 
 ## 📖 Overview
@@ -115,6 +116,8 @@ You can test the gesture recognition accuracy:
 ## 📜 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+=======
+>>>>>>> d9b9a54ab9b1b386791bc4b604b5a64b345602fa
 
 ## 🙏 Acknowledgments
 
