@@ -1,66 +1,124 @@
-# ✂️ Rock-Paper-Scissors Game
+# 🎮 Rock-Paper-Scissors-Lizard-Spock Game 🎲
 
-## 🎯 Project Overview
-This project is an interactive **Rock-Paper-Scissors** game where a user plays against a computer using **hand gestures**! The game utilizes **image processing** to recognize user gestures and follows standard game rules to determine the winner.
+## 📖 Overview
 
-## 🔑 Key Features
-✅ **Hand Gesture Recognition**: Uses image processing to detect user gestures (Rock, Paper, Scissors).  
-✅ **Voice Command Activation**: Captures gestures when the user says _"Rock, Paper, Scissor, Shoot!"_.  
-✅ **Computer Opponent**: Randomly selects a move for the AI opponent.  
-✅ **Image Processing Steps**: Includes **background removal**, **grayscale conversion**, **thresholding**, and **binarization**.  
-✅ **Real-time Visualization**: Displays user and computer gestures side by side.  
-✅ **Attractive UI**: Clean and professional interface with real-time updates.  
-✅ **(Optional)**: Extended version with _Rock-Paper-Scissors-Lizard-Spock_.  
+This is an interactive gesture-recognition Rock-Paper-Scissors-Lizard-Spock game that uses your webcam to detect hand gestures! Inspired by the popular extension to the classic Rock-Paper-Scissors game as featured in "The Big Bang Theory," this application uses computer vision to recognize your hand gestures in real-time.
 
-## 🛠️ Tech Stack
-- **Python** 🐍
-- **OpenCV** 👁️ (Image Processing)
-- **MediaPipe** 🖐️ (Hand Tracking)
-- **Tkinter / PyQt** 🎨 (GUI)
-- **NumPy** 🔢 (Image Processing)
-- **SpeechRecognition** 🎙️ (Voice Input)
+![Game Demo](assets/images/game_demo.png)
 
-## 🚀 How It Works
-1️⃣ User positions their hand in front of the camera.  
-2️⃣ Says _"Rock, Paper, Scissor, Shoot!"_ to capture the gesture.  
-3️⃣ The system processes the image and identifies the gesture.  
-4️⃣ The computer selects a random gesture.  
-5️⃣ The winner is determined based on the classic game rules.  
-6️⃣ The result is displayed on the screen.  
+## 🔍 Features
 
-## 🖥️ Installation & Setup
-1. **Clone the Repository** 📂  
-   ```bash
-   git clone https://github.com/SE-LAPS/Rock-Paper-Scissor-Game.git
-   cd rock-paper-scissors-gesture
+- 📹 **Real-time gesture recognition**: Play using your webcam
+- 🖐️ **Five gestures**: Rock, Paper, Scissors, Lizard, and Spock
+- 📊 **Game statistics**: Track your wins, losses, and ties
+- 📈 **Performance testing**: Evaluate the accuracy of gesture recognition
+- 🎭 **Fallback to random mode**: In case your camera is not available
+- 🌈 **Beautiful UI**: Modern interface with smooth animations
+- 📱 **Responsive design**: Adapts to different screen sizes
+
+## 🎯 Game Rules
+
+As Sheldon explains:
+
+- ✂️ Scissors cuts Paper
+- 📄 Paper covers Rock
+- 🪨 Rock crushes Lizard
+- 🦎 Lizard poisons Spock
+- 🖖 Spock smashes Scissors
+- ✂️ Scissors decapitates Lizard
+- 🦎 Lizard eats Paper
+- 📄 Paper disproves Spock
+- 🖖 Spock vaporizes Rock
+- 🪨 Rock crushes Scissors
+
+## 🚀 Getting Started
+
+### 📋 Prerequisites
+
+- Python 3.8+
+- Webcam (built-in or external)
+- Windows/Mac/Linux operating system
+
+### 🔧 Installation
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/rock-paper-scissors-lizard-spock.git
+   cd rock-paper-scissors-lizard-spock
    ```
 
-2. **Install Dependencies** 📦  
-   ```bash
-   pip install opencv-python mediapipe numpy speechrecognition tkinter
+2. Install the required dependencies:
+   ```
+   pip install -r requirements.txt
    ```
 
-3. **Run the Game** ▶️  
-   ```bash
+3. Run the game:
+   ```
    python main.py
    ```
 
-## 📷 Example Screenshots
-![Screenshot 2025-03-02 121959](https://github.com/user-attachments/assets/a75153a8-9aeb-4931-adaa-3b3b64a1aee8)
+## 🕹️ How to Play
 
-## 🏆 Game Rules
-- **Rock** 🪨 beats Scissors ✂️
-- **Scissors** ✂️ beats Paper 📄
-- **Paper** 📄 beats Rock 🪨
-- (Optional) **Lizard** 🦎 and **Spock** 🖖 can be added for an advanced variant!
+1. 🚀 Launch the application by running `python main.py`
+2. 👆 Click the "Start" button to begin a round
+3. 🤚 When the countdown reaches "Now!", show your gesture to the camera
+4. 🔄 The computer will randomly choose its gesture
+5. 🏆 The winner is displayed along with the rule that determined the outcome
+6. 📊 Click "Show Results" to see detailed game statistics
 
-## 🛠️ Future Improvements
-- ✨ Improve gesture recognition accuracy.
-- 🎤 Enhance speech recognition for better user interaction.
-- 🧠 Implement a Machine Learning model for gesture classification.
+### 🖐️ Gesture Guide
+
+- **Rock** 👊: Make a fist
+- **Paper** ✋: Open your hand with fingers extended
+- **Scissors** ✌️: Extend index and middle fingers in a V shape
+- **Lizard** 🤏: Form a "puppet mouth" shape with your hand
+- **Spock** 🖖: Make the Vulcan salute
+
+## 🛠️ Technical Details
+
+This application uses:
+
+- **PySide6**: For the UI components and application framework
+- **OpenCV**: For computer vision and gesture recognition
+- **NumPy**: For numerical calculations and array operations
+- **Python**: For the application logic
+
+### 🧠 Gesture Recognition
+
+The gesture recognition system uses:
+
+- Background subtraction to isolate the hand
+- Contour detection to find the hand shape
+- Convexity defects analysis to identify fingers
+- Feature extraction to classify different gestures
+- Stability tracking to reduce false positives
+
+## 🧪 Testing
+
+You can test the gesture recognition accuracy:
+
+1. Click on "Actions" in the top right
+2. Select "Test Recognition Accuracy"
+3. Follow the on-screen instructions to test each gesture
+4. Review your accuracy results
+
+## 📝 Troubleshooting
+
+- **Camera not working?**: Ensure no other application is using your webcam
+- **Poor recognition?**: Adjust your lighting and ensure your hand is within the green rectangle
+- **Game not starting?**: Check the console for error messages
+
+## 👤 Authors
+
+- Your Name - Initial work
 
 ## 📜 License
-This project is **open-source** and available under the **MIT License**.
 
-🚀 Have fun playing! Let the best hand win! ✋🤖
+This project is licensed under the MIT License - see the LICENSE file for details.
 
+## 🙏 Acknowledgments
+
+- The Big Bang Theory for popularizing Rock-Paper-Scissors-Lizard-Spock
+- Sam Kass and Karen Bryla for inventing the expanded game
+- OpenCV community for the computer vision tools
+- PySide6/Qt team for the UI framework 
