@@ -4,8 +4,6 @@
 
 This is an interactive gesture-recognition Rock-Paper-Scissors-Lizard-Spock game that uses your webcam to detect hand gestures! Inspired by the popular extension to the classic Rock-Paper-Scissors game as featured in "The Big Bang Theory," this application uses computer vision to recognize your hand gestures in real-time.
 
-![Game Demo](assets/images/game_demo.png)
-
 ## 🔍 Features
 
 - 📹 **Real-time gesture recognition**: Play using your webcam
