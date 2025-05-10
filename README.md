@@ -122,6 +122,7 @@ You can test the gesture recognition accuracy:
 ## 📜 License
 
 This project is licensed under the MIT License - see the LICENSE file for details. <br><br>
+| 01 | 02 |
 |---------|------------|
 | ![Black and Orange Gradient Modern Game Presentation](https://github.com/user-attachments/assets/a4e6665e-67a0-43fb-b8be-d3ec56545da7) | ![Black and Orange Gradient Modern Game Presentation](https://github.com/user-attachments/assets/8bcf081e-1803-4048-95e0-4dd5cab238d0) |
 
