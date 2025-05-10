@@ -6,28 +6,28 @@ This is an interactive gesture-recognition Rock-Paper-Scissors-Lizard-Spock game
 
 ## 🔍 Features
 
-- 📹 **Real-time gesture recognition**: Play using your webcam
-- 🖐️ **Five gestures**: Rock, Paper, Scissors, Lizard, and Spock
-- 📊 **Game statistics**: Track your wins, losses, and ties
-- 📈 **Performance testing**: Evaluate the accuracy of gesture recognition
-- 🎭 **Fallback to random mode**: In case your camera is not available
-- 🌈 **Beautiful UI**: Modern interface with smooth animations
-- 📱 **Responsive design**: Adapts to different screen sizes
+- **Real-time gesture recognition**: Play using your webcam
+- **Five gestures**: Rock, Paper, Scissors, Lizard, and Spock
+- **Game statistics**: Track your wins, losses, and ties
+- **Performance testing**: Evaluate the accuracy of gesture recognition
+- **Fallback to random mode**: In case your camera is not available
+- **Beautiful UI**: Modern interface with smooth animations
+- **Responsive design**: Adapts to different screen sizes
 
 ## 🎯 Game Rules
 
 As Sheldon explains:
 
-- ✂️ Scissors cuts Paper
-- 📄 Paper covers Rock
-- 🪨 Rock crushes Lizard
-- 🦎 Lizard poisons Spock
-- 🖖 Spock smashes Scissors
-- ✂️ Scissors decapitates Lizard
-- 🦎 Lizard eats Paper
-- 📄 Paper disproves Spock
-- 🖖 Spock vaporizes Rock
-- 🪨 Rock crushes Scissors
+- Scissors cuts Paper
+- Paper covers Rock
+- Rock crushes Lizard
+- Lizard poisons Spock
+- Spock smashes Scissors
+- Scissors decapitates Lizard
+- Lizard eats Paper
+- Paper disproves Spock
+- Spock vaporizes Rock
+- Rock crushes Scissors
 
 ## 🚀 Getting Started
 
@@ -57,12 +57,12 @@ As Sheldon explains:
 
 ## 🕹️ How to Play
 
-1. 🚀 Launch the application by running `python main.py`
-2. 👆 Click the "Start" button to begin a round
-3. 🤚 When the countdown reaches "Now!", show your gesture to the camera
-4. 🔄 The computer will randomly choose its gesture
-5. 🏆 The winner is displayed along with the rule that determined the outcome
-6. 📊 Click "Show Results" to see detailed game statistics
+1. Launch the application by running `python main.py`
+2. Click the "Start" button to begin a round
+3. When the countdown reaches "Now!", show your gesture to the camera
+4. The computer will randomly choose its gesture
+5. The winner is displayed along with the rule that determined the outcome
+6. Click "Show Results" to see detailed game statistics
 
 ### 🖐️ Gesture Guide
 
