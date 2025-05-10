@@ -130,7 +130,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 2️⃣YouTube Link 2 -> https://youtu.be/q-JeMtU6lq4 <br>
 3️⃣GitHub Link -> https://github.com/SE-LAPS/Rock-Paper-Scissor-Game 
 
-
 ## 🙏 Acknowledgments
 
 - The Big Bang Theory for popularizing Rock-Paper-Scissors-Lizard-Spock
