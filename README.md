@@ -111,8 +111,9 @@ You can test the gesture recognition accuracy:
 | LAHIRU | THEVINDU | WASANA | PRASITHA |CHAMITH |
 |---------|------------|-------------|-------------|-------------|
 | ![1](https://github.com/user-attachments/assets/2d9422fb-b2a6-4851-b117-d40b3dc58bd1) | ![1](https://github.com/user-attachments/assets/2d9422fb-b2a6-4851-b117-d40b3dc58bd1) | ![1](https://github.com/user-attachments/assets/2d9422fb-b2a6-4851-b117-d40b3dc58bd1) | ![1](https://github.com/user-attachments/assets/2d9422fb-b2a6-4851-b117-d40b3dc58bd1) | ![1](https://github.com/user-attachments/assets/2d9422fb-b2a6-4851-b117-d40b3dc58bd1) |
-| ![2](https://github.com/user-attachments/assets/192a5cf5-7b0e-43a7-bae8-68aa5ee0da90) | ![1](https://github.com/user-attachments/assets/f0a812fc-a6b0-40bf-8375-0bac9e73a00b) | ![1](https://github.com/user-attachments/assets/a19d6f80-deaa-4d54-b6b1-ac6c9c10820a) | ![1](https://github.com/user-attachments/assets/57448c2a-36ed-49e2-a94e-6d29e2c3f687) |![1](https://github.com/user-attachments/assets/c31cf1f1-86ba-4875-b708-efecbf0cdccb) |
-
+| ![3](https://github.com/user-attachments/assets/93e43b9b-b5fa-44af-a0bd-46323ffb83df) | ![1](https://github.com/user-attachments/assets/f0a812fc-a6b0-40bf-8375-0bac9e73a00b) | ![1](https://github.com/user-attachments/assets/a19d6f80-deaa-4d54-b6b1-ac6c9c10820a) | ![1](https://github.com/user-attachments/assets/57448c2a-36ed-49e2-a94e-6d29e2c3f687) |![1](https://github.com/user-attachments/assets/c31cf1f1-86ba-4875-b708-efecbf0cdccb) |
+| ![8](https://github.com/user-attachments/assets/fe4da7e0-931c-4465-ac35-0b6a6d0c4aee) | ![2](https://github.com/user-attachments/assets/9d703464-4c84-4b35-85dd-325e32f114da) | ![2](https://github.com/user-attachments/assets/ac377097-9c58-4dd4-bd32-c942d3f57ae5) | ![2](https://github.com/user-attachments/assets/c6c756df-15a1-463a-85fd-e5791800eca4) | ![2](https://github.com/user-attachments/assets/c4dae83c-5b1f-4b15-b8af-ab49c3455070) |
+| 
 
 
 
