@@ -112,7 +112,7 @@ You can test the gesture recognition accuracy:
 
 ## 📜 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details. <br><br>
 1️⃣YouTube Link 1 -> https://youtu.be/tJH4Owejj7Y?si=NF0Hd6oI_v7DF4aA <br>
 2️⃣YouTube Link 2 -> <br>
 3️⃣GitHub Link -> https://github.com/SE-LAPS/Rock-Paper-Scissor-Game 
