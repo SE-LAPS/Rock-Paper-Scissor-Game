@@ -125,9 +125,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 | 01 | 02 |
 |---------|------------|
 | ![Black and Orange Gradient Modern Game Presentation](https://github.com/user-attachments/assets/a4e6665e-67a0-43fb-b8be-d3ec56545da7) | ![Black and Orange Gradient Modern Game Presentation](https://github.com/user-attachments/assets/8bcf081e-1803-4048-95e0-4dd5cab238d0) |
-
-<br><br>
-
+<br>
 1️⃣YouTube Link 1 -> https://youtu.be/tJH4Owejj7Y?si=NF0Hd6oI_v7DF4aA <br>
 2️⃣YouTube Link 2 -> https://youtu.be/q-JeMtU6lq4 <br>
 3️⃣GitHub Link -> https://github.com/SE-LAPS/Rock-Paper-Scissor-Game 
