@@ -106,9 +106,14 @@ You can test the gesture recognition accuracy:
 - **Poor recognition?**: Adjust your lighting and ensure your hand is within the green rectangle
 - **Game not starting?**: Check the console for error messages
 
-## 👤 Authors
+## 👨‍💻 Collaborators 
 
-- Your Name - Initial work
+| LAHIRU | THEVINDU | WASANA | PRASITHA |CHAMITH |
+|---------|------------|-------------|-------------|-------------|
+| 
+
+
+
 
 ## 📜 License
 
